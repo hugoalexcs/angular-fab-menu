@@ -11,40 +11,92 @@ export class SpeedDialFabComponent implements OnInit {
 
   fabButtons = [
     {
-      icon: 'timeline'
+      icon: 'delete',
+      action: "navigate",
+      name: 'Excluir',
+      privileges: ['ADMIN']
     },
     {
-      icon: 'view_headline'
+      icon: 'notification_important',
+      action: "openModalEdit",
+      name: 'Lembrete',
+      privileges: ['USER', 'ADMIN', 'GUEST']
     },
     {
-      icon: 'room'
+      icon: 'calendar_today',
+      action: "openModalEdit",
+      name: 'Agenda',
+      privileges: ['USER', 'ADMIN', 'GUEST', 'PUBLIC']
     },
     {
-      icon: 'lightbulb_outline'
+      icon: 'create',
+      action: "openModalCall",
+      name: 'Editar',
+      privileges: ['ADMIN']
     },
     {
-      icon: 'lock'
+      icon: 'call',
+      action: "openModalCall",
+      name: 'Chamada',
+      privileges: ['USER', 'ADMIN']
     }
   ];
   buttons = [];
   fabTogglerState = 'inactive';
+  action: "test1";
 
   constructor() { }
   ngOnInit(): void {
   }
-  navigate() {
-    alert("test");
+
+  async getListMenu(privileges) {
+    
+    try {
+      let pvs = [];
+      await Promise.all(this.fabButtons.map(async (p) => {
+                      
+        if (await this.listaDeMenus(p, privileges)) {
+          pvs.push(p);
+        } else {
+            //  console.log('MENU ',p)
+        }
+  
+    }));
+    return pvs;
+    } catch (e) {
+      console.error(e);
+            return e;
+    }
+
+  }
+  async listaDeMenus(item, privileges) {    
+    let isPlano = false;
+    await Promise.all(item.privileges.map(async (p) => {
+           if (privileges.indexOf(p) > -1) 
+            isPlano = true;                    
+    }));    
+    return isPlano;
+}
+  
+
+  navigate(event) {
+    this[event]();
     this.onToggleFab();
+  }
+  test1(){
+    alert("test");
   }
 
   showItems() {
     this.fabTogglerState = 'active';
-    this.buttons = this.fabButtons;
+    this.getListMenu(['ADMIN']).then(data =>{
+      this.buttons = data;
+    });    
   }
 
   hideItems() {
     this.fabTogglerState = 'inactive';
-    this.buttons = [];
+    this.buttons = []; 
   }
 
   onToggleFab() {

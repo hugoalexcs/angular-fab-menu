@@ -5,16 +5,26 @@
     z-index: 100;
     display: flex;
     flex-direction: column-reverse;
-    align-items: center;
+    align-items: flex-end;
   
     > div {
       display: flex;
       flex-direction: column-reverse;
-      align-items: center;
+      align-items: flex-end;
       margin-bottom: 5px;
   
       button {
         margin-bottom: 17px;
+        background-color: #607d8b;
+        i{
+          color: white;
+        }
+      }
+      .label {
+        padding-right: 20px;
+        color: #607d8b;
+        font-weight: bold;
+        font-size: 18px;
       }
     }
   }
